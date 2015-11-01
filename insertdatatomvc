@@ -1,0 +1,46 @@
+client:
+<!DOCTYPE html>
+<html ng-app="myapp">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="~/angular.min.js"></script>
+</head>
+<body ng-controller="myctrl">
+    <input type="text" ng-model="eid"/>
+    <input type="text" ng-model="ename"/>
+    <input type="text" ng-model="epic"/>
+    <input type="text" ng-model="epass"/>
+    <button ng-click="add()">add</button>
+    <script>
+        var app = angular.module('myapp', [])
+        app.controller('myctrl', function ($scope, $http) {
+            var d = {};
+           
+            $scope.add = function () {
+                var d = {
+                    id: $scope.eid,
+                    name: $scope.ename,
+                    pic: $scope.epic,
+                    pass: $scope.epass
+                };
+                $http.post('/home/adddetails',JSON.stringify(d))
+                .success(function (response) {
+                    alert('success');
+                }).error(function (response){
+                    alert('error');
+                })
+            };
+        });
+    </script>
+</body>
+</html>
+
+server:
+ [HttpPost]
+        public ActionResult adddetails(employee e)
+        {
+            db.employees.Add(e);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
