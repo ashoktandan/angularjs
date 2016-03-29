@@ -1,0 +1,8 @@
+function a1() {
+
+ var person = prompt("Please enter your name");
+  document.cookie = "cname="+person;
+var x=getCookie("cname");
+alert(x);
+document.write(x);
+}
