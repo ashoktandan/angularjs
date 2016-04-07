@@ -1,0 +1,55 @@
+var app = angular.module("app1", []);
+app.filter('myformat', function () {
+    return function (e, min) {
+        if (e > min) {
+            return e;
+        }
+    };
+});
+app.controller("ctrl1", function ($scope) {
+    $scope.data;
+    $scope.cat;
+    $scope.names;
+    var x = [];
+    var y = [];
+    var t = [];
+    var v = [
+{ "name": "apple","category":"mobile", "unit": 11, "aprice": 1000, "cprice": 800, "dis": 0 },
+{ "name": "aspirine", "category": "extra", "unit": 15, "aprice": 2000, "cprice": 1800, "dis": 0 },
+{ "name": "mobile", "category": "mobile", "unit": 18, "aprice": 1500, "cprice": 850, "dis": 0 },
+{ "name": "tablet", "category": "mobile", "unit": 12, "aprice": 1100, "cprice": 840, "dis": 0 },
+{ "name": "mineral water", "category": "extra", "unit": 10, "aprice": 1200, "cprice": 980, "dis": 0 },
+{ "name": "watch", "category": "extra", "unit": 9, "aprice": 1000, "cprice": 800, "dis": 0 }
+    ];
+    for (var i = 0; i < v.length; i++) {
+        x.push(v[i].category);
+        if (v[i].cprice < v[i].aprice) {
+            v[i].dis = ((v[i].aprice - v[i].cprice) * 100) / v[i].aprice;
+            $scope.data = v;
+        }
+        else {
+            v[i].dis = 0;
+            $scope.data = v;
+        }
+    }
+    for (var i = 0; i < x.length; i++) {
+        for (var j = i; j < x.length; j++) {
+            if (x[i] === x[j]) {
+                x.pop(x[i]);
+            }
+        }
+    }
+    $scope.cat = x;
+     for (var i = 0; i < v.length; i++) {
+            y.push(v[i].name);
+     }
+     $scope.names = y;
+        $scope.catnames = function () {
+            for (var i = 0; i < y.length; i++) {
+                if ($scope.selectedcat==v[i].category) {
+                    t.push(y[i]);
+                }
+            }
+            $scope.names = t;
+        };
+});
