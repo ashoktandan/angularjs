@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Index</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <script src="scripts/jquery-2.1.4.min.js"></script>
+    <script src="scripts/angular.min.js"></script>
+    <script src="scripts/ang.js"></script>
+    <script src="scripts/jquery.js"></script>
+</head>
+<body ng-app="app1" ng-controller="ctrl1">
+ <div class="navbar navbar-default">
+ <div class=navbar-header"><button class="btn btn-link btn-xs" id="onoff"><h3>≡</h3></button></div></div> 
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="well">
+        <center>
+            <input list="categories" name="browser" id="searchcatbox" class="inp"  ng-model="selectedcat" ng-change="catnames()" placeholder="search/select category">
+                <datalist id="categories">
+                    <option ng-repeat="e in cat">{{e}}</option>
+                </datalist>
+          <button ng-click="resetcat()" class="btn btn-xs">reset</button>
+                <br />
+                <br />
+                <input list="itemnames" name="itemname" class="inp"  ng-model="selectedname" placeholder="search/select name">
+                <datalist id="itemnames">
+                    <option ng-repeat="e in names">{{e}}</option>
+                </datalist>
+                <br /><br />
+    <kbd>Unit</kbd> <input type="range" min="1" max="20" step="1" id="r1"  ng-model="per2" ng-init="per2=0" class="range"/> {{per2}} <br />
+ <kbd>ACTUAL price</kbd> <input type="range" min="99" max="2500" step="100"  ng-model="per1" ng-init="per1=2500" class="range" id="r2"/> {{per1}} <br />
+ <kbd>CURRENT PRICE</kbd> <input type="range" min="80" max="2000" step="50" ng-model="per" ng-init="per=2000" class="range" id="r3"/> {{per}} <br />
+ <kbd>Discount</kbd> <input type="range" min="-100" max="100" step="5" ng-model="per3" ng-init="per3=-100" class="range" id="r4"/> {{per3}}<br /><br />
+        <button ng-click="reset()" class="btn btn-xs">reset</button>
+      </center>  </div>
+        </div>
+        <div class="col-sm-7" id="tabdiv">
+            <div class="row  bg-primary">
+          <div class="col-sm-1"><h4>Index</h4></div>
+          <div class="col-sm-1"><h4>Product Id</h4></div>
+          <div class="col-sm-2"><h4>Name</h4></div>
+          <div class="col-sm-2"><h4>Category</h4></div>
+          <div class="col-sm-1" ng-click="orderByMe('unit')"><h4>Unit</h4></div>
+          <div class="col-sm-1"  ng-click="orderByMe('aprice')"><h4>Actual price</h4></div>
+          <div class="col-sm-1"  ng-click="orderByMe('cprice')"><h4>Current price</h4></div>
+          <div class="col-sm-2"  ng-click="orderByMe('dis')"><h4>Percent change</h4></div>
+          <div class="col-sm-1"><h4>more..</h4></div>
+      </div>
+           <div class="row" ng-repeat="e in data|filter:selectedcat|filter:selectedname|orderBy:myOrderBy"  ng-show="e.unit > per2 && e.aprice < per1 && e.cprice < per && e.dis > per3">
+             <div class="col-sm-1">{{$index+1}}</div>
+               <div class="col-sm-1">{{e.productid}}</div>
+              <div class="col-sm-2">{{e.name}}</div>
+               <div class="col-sm-2">{{e.category}}</div>
+               <div class="col-sm-1 unit">{{e.unit}}</div>
+               <div class="col-sm-1 price">{{e.aprice}}</div>
+               <div class="col-sm-1 current">{{e.cprice}}</div>
+               <div class="col-sm-2"><b>{{e.dis}}</b>%</div>
+               <div class="col-sm-1"> <abbr ng-mouseover="getdetails(e.productid)" style="margin-left:50%;" title="more details on your right"><span class="badge">►</span></abbr></div>
+               </div>
+            <div class="row">
+                <div class="col-sm-1">Total:</div>
+                <div class="col-sm-1">&nbsp</div>
+                <div class="col-sm-2">&nbsp</div>
+                <div class="col-sm-2">&nbsp</div>
+                <div class="col-sm-1" id="totunit"></div>
+                <div class="col-sm-1" id="totprice"></div>
+                <div class="col-sm-1" id="totcurrent"></div>
+                <div class="col-sm-2">&nbsp</div>
+                <div class="col-sm-2">&nbsp</div>
+            </div>
+            </div>
+        <div id="hiddendiv" class="col-sm-2">
+            <ul class="list-group list-unstyled">
+                <li class="list-group-item active">{{details.productid}}:{{details.name|uppercase}}</li>
+                <li class="list-group-item">Category:{{details.category}}</li>
+                <li class="list-group-item">Unit:{{details.unit}}</li>
+                <li class="list-group-item">Actual Price:Rs.{{details.aprice}}</li>
+                <li class="list-group-item">Current Price:Rs.{{details.cprice}}</li>
+                <li class="list-group-item">Price Change:{{details.dis}}%</li>
+            </ul>
+              </div>
+        </div>
+</body>  
+</html>
+
+script:
+var app = angular.module("app1", []);
+app.controller("ctrl1", function ($scope) {
+    $scope.data;
+    $scope.cat;
+    $scope.names;
+    var x = [];
+    var y = [];
+    var t = [];
+    var v = [
+{ "productid":1, "name": "apple","category":"mobile", "unit": 11, "aprice": 1000, "cprice": 800, "dis": 0 },
+{ "productid": 12, "name": "aspirine", "category": "extra", "unit": 15, "aprice": 2000, "cprice": 1800, "dis": 0 },
+{ "productid": 23, "name": "mobile", "category": "mobile", "unit": 18, "aprice": 1500, "cprice": 850, "dis": 0 },
+{ "productid": 34, "name": "tablet", "category": "mobile", "unit": 12, "aprice": 1100, "cprice": 840, "dis": 0 },
+{ "productid": 5, "name": "mineral water", "category": "extra", "unit": 10, "aprice": 1200, "cprice": 980, "dis": 0 },
+{ "productid": 66, "name": "watch", "category": "extra", "unit": 9, "aprice": 1000, "cprice": 1500, "dis": 0 }
+    ];
+    for (var i = 0; i < v.length; i++) {
+        x.push(v[i].category);
+        v[i].dis = (((v[i].aprice - v[i].cprice) * 100) / v[i].aprice).toFixed(2);
+        $scope.data = v;
+    }
+    for (var i = 0; i < x.length; i++) {
+        for (var j = i; j < x.length; j++) {
+            if (x[i] === x[j]) {
+                x.pop(x[i]);
+            }
+        }
+    }
+    $scope.cat = x;
+     for (var i = 0; i < v.length; i++) {
+            y.push(v[i].name);
+     }
+     $scope.names = y;
+        $scope.catnames = function () {
+            for (var i = 0; i < y.length; i++) {
+                if ($scope.selectedcat == v[i].category) {
+                    t.push(v[i].name);
+                }
+                else {
+                }
+            }
+            $scope.names = t;
+        };
+        $scope.changeunit = function () {
+            for (var i = 0; i < v.length; i++) {
+                if ($scope.per2 > v[i].unit) {
+                    v.pop(v[i]);
+                    $scope.data = v;
+                }
+                else {
+
+                }
+            }
+        }
+        $scope.orderByMe = function (x) {
+            $scope.myOrderBy = x;
+        }
+        $scope.details;
+        $scope.getdetails = function (x) {
+            var get;
+            for (var a = 0; a < v.length; a++) {
+                if (x == v[a].productid) {
+                    get = v[a];
+                }
+            }
+            $scope.details = get;
+        }
+        $scope.resetcat = function () {
+            $scope.selectedcat = "";
+            $scope.names = y;
+        }
+        $scope.reset = function () {
+            $scope.per = 2000;
+            $scope.per1 = 2500;
+            $scope.per2 = 0;
+            $scope.per3 = -100;
+            $scope.selectedcat="";
+            $scope.selectedname = "";
+        }
+});
+
+script:
+$(document).ready(function () {
+    $('#hiddendiv').hide();
+    colorchange();
+    $('*').keydown(function () {
+        colorchange();
+        total('.unit', '#totunit');
+        total('.price', '#totprice');
+        total('.current', '#totcurrent');
+    });
+    $('*').keyup(function () {
+        colorchange();
+        total('.unit', '#totunit');
+        total('.price', '#totprice');
+        total('.current', '#totcurrent');
+    });
+    $('*').click(function () {
+        colorchange();
+        total('.unit', '#totunit');
+        total('.price', '#totprice');
+        total('.current', '#totcurrent');
+    });
+    var count=0;
+    $('#onoff').click(function () {
+        count++;
+        if (count % 2 != 0) {
+            $('#onoff').addClass('btn-success');
+            $('.col-sm-3').hide();
+            $('#hiddendiv').removeClass('col-sm-2');
+            $('#hiddendiv').addClass('col-sm-4');
+        }
+        else {
+            $('#onoff').removeClass('btn-success');
+            $('#hiddendiv').removeClass('col-sm-4');
+            $('#hiddendiv').addClass('col-sm-2');
+            $('.col-sm-3').show();
+        }
+    });
+    $('abbr').hover(function () {
+$('#hiddendiv').show();        
+    });
+    function colorchange() {
+        $('b').each(function () {
+            if ($(this).text() > 0 && $(this).text() < 20) {
+                $(this).parent().parent().css('background-color', '#eeeeee');
+            }
+            else if ($(this).text() < 0) {
+                $(this).parent().parent().css('background-color', 'red');
+            }
+            else if ($(this).text() >= 20) {
+                $(this).parent().parent().css('background-color', '#50d090');
+            }
+        });
+    }
+    total('.unit', '#totunit');
+    total('.price', '#totprice');
+    total('.current', '#totcurrent');
+    $('input').change(function () {
+        total('.unit', '#totunit');
+        total('.price', '#totprice');
+        total('.current', '#totcurrent');
+    });
+    function total(columnName,displayId) {
+        var tot = [];
+        var v = 0;
+        $(columnName).each(function () {
+            if ($(this).parent().hasClass('ng-hide')) {
+            }
+            else {
+               tot.push(parseInt($(this).text()));
+            } 
+        });
+        for (var r = 0; r < tot.length; r++) {
+            v +=tot[r];
+        }
+        $(displayId).text(v);
+    }
+});
