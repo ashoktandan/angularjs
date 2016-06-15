@@ -1,0 +1,13 @@
+angular.module('myApp',[])
+.controller('ExampleController',function($scope, $rootScope, ScheduleService) {
+  $scope.hours = 4;
+  $rootScope.hours = 42;
+  ScheduleService.test();
+})
+.factory('ScheduleService', function($rootScope) {
+  return {
+        test : function(){
+                alert($rootScope.hours);
+            }
+    };
+});
