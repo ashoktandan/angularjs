@@ -1,0 +1,76 @@
+<html ng-app="theDemo">
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link href="bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="styles/app.css" rel="stylesheet" />
+    <script src="resources/angular.min.js"></script>
+    <script src="resources/angular-route.min.js"></script>
+</head>
+<body>
+    <div ng-view>
+    </div>
+    <script>
+        var app = angular.module('theDemo', ['ngRoute']);
+        app.filter('checktrueorfalse', function () {
+            return function (input) {
+                if (input == 'true') {
+                    return '&#x2714;';
+                }
+                else {
+                    return '&#x2715;';
+                }
+            }
+        });
+        app.config(function config($routeProvider) {
+            $routeProvider.
+              when('/phones', {
+                  template: '<phone-list></phone-list>'
+              }).
+              when('/phones/:phoneId', {
+                  template: '<phone-detail></phone-detail>'
+              }).
+              otherwise('/phones');
+        }
+        );
+        app.directive('phoneList', function () {
+            return {
+                templateUrl: 'templates/phone-list.template.html',
+                controller: function ($scope, $http) {
+                    $http.get('phones/phones.json')
+                        .then(function (respnse) {
+                            $scope.phonelist = respnse.data;
+                        });
+                    $scope.model = {
+                        sort: 'name'
+                    }
+                }
+            }
+        });
+        app.directive('phoneDetail', function () {
+            return {
+                templateUrl: 'templates/phone-detail.template.html',
+                controller: function ($scope, $routeParams, $rootScope, $http) {
+                    $http.get('phones/' + $routeParams.phoneId + '.json')
+                        .then(function (respnse) {
+                            $scope.phonedetail = respnse.data;
+                            var i = 0;
+                            $scope.bigimage = $scope.phonedetail.images[i];
+
+                            $scope.changeimage = function () {
+                                i++;
+                                if (i < $scope.phonedetail.images.length) {
+                                    $scope.bigimage = $scope.phonedetail.images[i];
+                                }
+                                else {
+                                    i = 0;
+                                    $scope.bigimage = $scope.phonedetail.images[0];
+                                }
+                            };
+                        });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
