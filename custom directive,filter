@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.js"></script>
+    <script>
+        var app;
+        app = angular.module("myapp", ['ngRoute']);
+        app.config(function($routeProvider) {
+            $routeProvider
+                .when('/newview', { templateUrl: '/a.html' })
+                .when('/anotherview', { templateUrl: '/b.html' })
+                .otherwise({ redirectTo: '' });
+        });
+        app.filter('newfilter',
+            function() {
+                return function(input) {
+                    return input + ' by ashok';
+                }
+            });
+        app.directive('newtag',
+            function() {
+                return {
+                restrict:'E',
+                template:'<span style="color:red;">{{name|newfilter}}<span>'
+                }
+            });
+        //app.factory('mulby10',
+        //    function () {
+        //        return {
+        //            mul: function (num) { return num * 10; }
+        //        }
+        //    });
+        app.factory('mulby10', function () {
+               return function(num) {
+                     return num * 10;
+               }
+           });
+        app.controller('ctrl1',
+            function ($scope, mulby10) {
+                $scope.name = mulby10(9);
+            });
+        app.controller('ctrl2',
+            function($scope) {
+                $scope.name = 'tandan';
+            });
+        app.controller('ctrl3',
+            function($scope, $http) {
+                $http.get('data.js')
+                    .success(function(response) {
+                        $scope.data = response;
+                    });
+            });
+    </script>
+</head>
+<body ng-app="myapp" align="center">
+<h1>this is root(parent) page.</h1>
+<div ng-controller="ctrl1">
+    $scope.name in first controller:<newtag></newtag>
+</div>
+<div ng-controller="ctrl2">
+    $scope.name in second controller:<newtag></newtag>
+</div>
+<div style="background-color: green;" ng-view></div>
+<a href="#newview"> Show view</a>
+<a href="#anotherview">another view</a>
+<div ng-controller="ctrl3">
+    <ul ng-repeat="d in data" style="background-color: orange;"><li>Mr. {{d.Name}} whose roll number is {{d.RollNo}} has got {{d.Percentage}}</li></ul>
+</div>
+    <div title="..i m external file" style="background-color:red;" ng-include="'a.html'"></div>
+</body>
+</html>
