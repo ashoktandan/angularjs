@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+<script src="angular.min.js"></script>
+</head>
+<body ng-app="app1" ng-controller="ctrl1">
+    <div ng-repeat="d in data">
+        <h1 ng-init="i[$index].myid=d.id">{{d.id}}</h1>
+        <h1 ng-init="i[$index].myname=d.name">{{d.name}}</h1>
+    </div>
+        <button ng-click="fun()">click me</button>
+</body>
+    <script>
+        var app = angular.module("app1", []);
+        app.controller("ctrl1", function ($scope) {
+            $scope.data = [{"id":1,"name":"ashok"}, {"id":11,"name":"tandan"}, {"id":13,"name":"ashoka"}];
+            $scope.i = {};
+            $scope.fun = function () {
+                for(var j=0;j< $scope.data.length;j++){
+                    console.log($scope.i[j].myid);
+                    console.log($scope.i[j].myname);
+                    console.log($scope.i);
+                }
+            }
+        });
+    </script>
+</html>
